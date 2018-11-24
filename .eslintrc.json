@@ -1,0 +1,37 @@
+{
+	"env": {
+		"es6": false,
+		"node": true,
+		"mocha": false
+	},
+	"extends": "standard",
+	"rules": {
+		"no-console": 0,
+		"indent": [
+			"error",
+			4,
+			{
+				"SwitchCase": 1
+			}
+		],
+		"quotes": [
+			"error",
+			"single"
+		],
+		"semi": [
+			"error",
+			"never"
+		],
+		"no-unused-vars": [
+			"warn"
+		],
+		"one-var": [
+			"off"
+		],
+		"space-before-function-parent": [
+			"off"
+		],
+		"padded-blocks": "off",
+		"standard/object-curly-even-spacing": "off"
+	}
+}
