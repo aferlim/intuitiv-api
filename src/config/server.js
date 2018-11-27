@@ -6,19 +6,15 @@ const bodyParser = require('body-parser')
 
 const allowcors = require('./cors')
 
-module.exports = (config) => {
+server.set('port', process.env.PORT || 3001)
 
-    server.use(bodyParser.urlencoded({ extended: true }))
-    server.use(bodyParser.json())
+server.use(bodyParser.urlencoded({ extended: true }))
+server.use(bodyParser.json())
 
-    server.use(allowcors)
+server.use(allowcors)
 
-    server.listen(config.PORT, () => {
-        console.log(`BACKEND is running on port ${config.PORT}.`)
-    })
+server.listen(server.get('port'), () => {
+    console.log(`BACKEND is running on port ${server.get('port')}.`)
+})
 
-    return {
-        server: server,
-        router: express.Router()
-    }
-}
+module.exports = { server }
