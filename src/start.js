@@ -1,3 +1,5 @@
+const azureStorage = require('azure-storage'),
+    blobService = azureStorage.createBlobService(process.env.AZURE_STORAGE_CONNECTION_STRING)
 
 global.Promise = require('bluebird')
 
@@ -9,12 +11,11 @@ const configureServer = (data) => {
 }
 
 const configRoute = async ({ data, server }) => {
-    server.use(await require('./routes')(data))
+    server.use(await require('./routes')({ data, blobService }))
 }
 
 const startupError = err => { console.error('🚨 Error bootstrapping app!', err) }
 
-// const datac = connectData()
 connectData()
     .then(configureServer)
     .then(configRoute)
