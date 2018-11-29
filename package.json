@@ -5,7 +5,7 @@
   "main": "src/start.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "cross-env AZURE_STORAGE_ACCOUNT=kkk AZURE_STORAGE_ACCESS_KEY=kk AZURE_STORAGE_CONNECTION_STRING=kk MONGO_CONNECTION_STRING=mongodb://localhost:27017/todo nodemon",
+    "dev": "cross-env  MONGO_CONNECTION_STRING=mongodb://localhost:27017/todo nodemon",
     "production": "pm2 start src/start.js --name intuitiv-api"
   },
   "repository": {
@@ -34,6 +34,7 @@
     "error-factory": "^0.1.6",
     "express": "^4.16.4",
     "into-stream": "^4.0.0",
+    "mime-types": "^2.1.21",
     "mongodb": "^3.1.10",
     "mongoose": "^5.3.13",
     "multer": "^1.4.1",

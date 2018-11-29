@@ -14,7 +14,7 @@ module.exports = async ({ data, blobService }) => {
 
     router.get('/todos', await todos({ data, responses }))
 
-    router.get('/upload-image', uploadStrategy, await uploadcase({ blobService, responses }))
+    router.post('/upload-image', uploadStrategy, await uploadcase({ blobService, responses }))
 
     return router
 }
