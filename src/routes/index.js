@@ -2,7 +2,7 @@ const express = require('express')
 
 const multer = require('multer'),
     inMemoryStorage = multer.memoryStorage(),
-    uploadStrategy = multer({ storage: inMemoryStorage }).single('image')
+    uploadStrategy = multer({ storage: inMemoryStorage, limits: { fieldSize: 8 * 1024 * 1024 } }).single('image')
 
 const responses = require('./responses')
 

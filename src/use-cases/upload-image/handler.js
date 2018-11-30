@@ -1,6 +1,6 @@
 const getStream = require('into-stream')
 
-const { BlobContainerError } = require('./errors')
+const { BlobContainerError, InvalidBlobType } = require('./errors')
 
 module.exports = async ({ uploadFile, responses }) =>
     async (req, res, next) => {
@@ -17,6 +17,7 @@ module.exports = async ({ uploadFile, responses }) =>
         await uploadFile({ blobName, stream, streamLength })
             .then(ok)
             .catch(BlobContainerError, badrequestWithMessage)
+            .catch(InvalidBlobType, badrequestWithMessage)
             .catch(badrequest)
             .catch(next)
     }
