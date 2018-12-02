@@ -1,12 +1,15 @@
 const mime = require('mime-types')
+const getStream = require('into-stream')
+const sharp = require('sharp')
 
-const { BlobContainerError, InvalidBlobType } = require('./errors')
+const { BlobContainerError, InvalidBlobType, BlobError } = require('./errors')
 
 module.exports = async ({ blobService }) =>
-    ({ blobName, stream, streamLength }) => {
+    ({ blobName, buffer, streamLength }) => {
 
         return validateType(mime.lookup(blobName))
-            .then(uploadToBlob({ blobService, containerName: 'intuitiv-container', blobName, stream, streamLength }))
+            .then(valid => resize(buffer, blobName, streamLength)(valid))
+            .then(({ stream, blobName, streamLength }) => uploadToBlob({ blobService, containerName: 'intuitiv-container', blobName, stream, streamLength }))
             .then(result => Promise.resolve(result))
             .catch(err => Promise.reject(err))
     }
@@ -31,10 +34,51 @@ const validateType = type => {
 }
 
 const allowedMimeTypes = (type) => ([
-    { type: 'image/gif', convert: true },
-    { type: 'image/jpeg', convert: true },
-    { type: 'image/pjpeg', convert: true },
-    { type: 'image/x-png', convert: true },
-    { type: 'image/png', convert: true },
-    { type: 'image/svg+xml', convert: false }]
+    { type: 'image/gif', convert: true, maxW: 600, minW: 50, maxH: 600, minH: 50 },
+    { type: 'image/jpeg', convert: true, maxW: 600, minW: 50, maxH: 600, minH: 50 },
+    { type: 'image/pjpeg', convert: true, maxW: 600, minW: 50, maxH: 600, minH: 50 },
+    { type: 'image/x-png', convert: true, maxW: 600, minW: 50, maxH: 600, minH: 50 },
+    { type: 'image/png', convert: true, maxW: 600, minW: 50, maxH: 600, minH: 50 },
+    { type: 'image/svg+xml', convert: false, maxW: 600, minW: 50, maxH: 600, minH: 50 }]
     .filter((a) => a.type === type))
+
+const resize = (buffer, blobName, streamLength) => async (format) => {
+
+    if (!format.convert) {
+        return Promise.resolve({ stream: getStream(buffer), blobName: blobName, streamLength: streamLength })
+    }
+
+    let image = sharp(buffer)
+    let toBuffer = null, valid = true
+
+    await image
+        .metadata()
+        .then(function (metadata) {
+
+            if (metadata.width > metadata.height && metadata.width > format.maxW) {
+                return image
+                    .resize({ width: format.maxW })
+                    .webp()
+                    .toBuffer()
+            }
+
+            if (metadata.height > format.maxH) {
+                return image
+                    .resize({ height: format.maxH })
+                    .webp()
+                    .toBuffer()
+            }
+
+            return image
+                .webp()
+                .toBuffer()
+        })
+        .then(function (data) {
+            toBuffer = data
+            blobName = `${blobName.split('.')[0]}.webp`
+            streamLength = toBuffer.length
+        })
+        .catch(_ => { valid = false })
+
+    return valid ? Promise.resolve({ stream: toBuffer !== null ? getStream(toBuffer) : getStream(buffer), blobName: blobName, streamLength: streamLength }) : Promise.reject(BlobError('did not possible format blob'))
+}
