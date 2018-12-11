@@ -7,7 +7,8 @@ const multer = require('multer'),
 const responses = require('./responses')
 
 const todos = require('../use-cases/get-todos'),
-    uploadcase = require('../use-cases/upload-image')
+    uploadcase = require('../use-cases/upload-image'),
+    listImages = require('../use-cases/get-image')
 
 module.exports = async ({ data, blobService }) => {
     const router = express.Router()
@@ -15,6 +16,8 @@ module.exports = async ({ data, blobService }) => {
     router.get('/todos', await todos({ data, responses }))
 
     router.post('/upload-image', uploadStrategy, await uploadcase({ blobService, responses }))
+
+    router.get('/images/:pagesize', await listImages({ blobService, responses }))
 
     return router
 }

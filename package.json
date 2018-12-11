@@ -5,7 +5,7 @@
   "main": "src/start.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "cross-env AZURE_STORAGE_CONNECTION_STRING='' MONGO_CONNECTION_STRING=mongodb://localhost:27017/todo nodemon",
+    "dev": "cross-env AZURE_STORAGE_CONNECTION_STRING='DefaultEndpointsProtocol=https;AccountName=intuitiv;AccountKey=GzJBJwlYzwChsVInO3XVvtnJLovv4YCtxnMxNpf9bQzma59zX+G0t0gNP4PQIB0ngpRXRGFK5XHuJaweZfbXxA==;EndpointSuffix=core.windows.net' MONGO_CONNECTION_STRING=mongodb://localhost:27017/todo nodemon",
     "production": "pm2 start src/start.js --name intuitiv-api"
   },
   "repository": {

@@ -16,7 +16,7 @@ module.exports = async ({ blobService }) =>
 
 const uploadToBlob = ({ blobService, containerName, blobName, stream, streamLength }) => new Promise((resolve, reject) => {
 
-    var options = { contentSettings: { contentType: mime.lookup(blobName) } }
+    let options = { contentSettings: { contentType: mime.lookup(blobName) } }
 
     blobService.createBlockBlobFromStream(containerName, `image/${blobName}`, stream, streamLength, options, err => {
         if (err) {
@@ -29,6 +29,9 @@ const uploadToBlob = ({ blobService, containerName, blobName, stream, streamLeng
 })
 
 const validateType = type => {
+
+    if (!type) { return Promise.reject(InvalidBlobType('no image informed')) }
+
     let valid = allowedMimeTypes(type)[0]
     return valid ? Promise.resolve(valid) : Promise.reject(InvalidBlobType('Invalid image type'))
 }

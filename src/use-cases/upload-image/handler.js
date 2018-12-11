@@ -4,17 +4,17 @@ const { BlobContainerError, InvalidBlobType, BlobError } = require('./errors')
 module.exports = async ({ uploadFile, responses }) =>
     async (req, res, next) => {
 
-        const ok = responses.ok(res),
+        const created = responses.created(res),
             badrequestWithMessage = responses.badrequestWithMessage(res),
             badrequest = responses.badrequest(res)
 
         const
-            blobName = req.file.originalname,
-            buffer = req.file.buffer,
-            streamLength = req.file.buffer.length
+            blobName = req.file ? req.file.originalname : null,
+            buffer = req.file ? req.file.buffer : null,
+            streamLength = req.file ? req.file.buffer.length : null
 
         await uploadFile({ blobName, buffer, streamLength })
-            .then(ok)
+            .then(created)
             .catch(BlobContainerError, badrequestWithMessage)
             .catch(InvalidBlobType, badrequestWithMessage)
             .catch(BlobError, badrequestWithMessage)
