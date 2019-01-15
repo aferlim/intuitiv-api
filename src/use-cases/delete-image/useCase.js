@@ -16,7 +16,7 @@ const deleteBlobItem = async ({ blobService, blobName }) => {
     })
 }
 
-const getBlobProperties = ({ blobService, blobName }) =>
+const getBlobProperties = async ({ blobService, blobName }) =>
     new Promise((resolve, reject) => {
         blobService.getBlobProperties(
             'intuitiv-container',

@@ -6,7 +6,7 @@ module.exports = async ({ getBlobImages, responses }) => async (
     next
 ) => {
     const ok = responses.ok(res),
-        badRequestWithMessage = responses.badrequestWithMessage(res)
+        badRequestWithMessage = responses.badRequestWithMessage(res)
 
     let continuationToken = req.query.continuationtoken || null,
         pageSize = req.params.pagesize || 0,
