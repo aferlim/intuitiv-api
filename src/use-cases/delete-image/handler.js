@@ -10,7 +10,7 @@ module.exports = async ({ deleteBlob, responses }) => async (
         badRequest = responses.badRequest(res),
         badRequestWithMessage = responses.badRequestWithMessage(res)
 
-    let blobName = req.query.blobName
+    let blobName = req.params.blobName
 
     await deleteBlob({ blobName })
         .then(success)

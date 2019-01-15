@@ -1,11 +1,11 @@
 const { DeleteBlobError, NotFoundBlobError } = require('./errors')
 
-const deleteBlobItem = async ({ blobService, blobName }) => {
+const deleteBlobItem = ({ blobService, blobName }) => {
     return new Promise((resolve, reject) => {
-        blobService.deleteBlobIfExist(
+        blobService.deleteBlobIfExists(
             'intuitiv-container',
             `image/${blobName}`,
-            (err, data) => {
+            err => {
                 if (err) {
                     reject(DeleteBlobError(err))
                 } else {
@@ -16,7 +16,7 @@ const deleteBlobItem = async ({ blobService, blobName }) => {
     })
 }
 
-const getBlobProperties = async ({ blobService, blobName }) =>
+const getBlobProperties = ({ blobService, blobName }) =>
     new Promise((resolve, reject) => {
         blobService.getBlobProperties(
             'intuitiv-container',
@@ -24,10 +24,9 @@ const getBlobProperties = async ({ blobService, blobName }) =>
             null,
             (error, blob) => {
                 if (error) {
-                    reject(DeleteBlobError(error))
+                    reject(NotFoundBlobError(error))
                     return
                 }
-
                 blob !== null
                     ? resolve()
                     : reject(NotFoundBlobError('no blob found'))
@@ -35,11 +34,11 @@ const getBlobProperties = async ({ blobService, blobName }) =>
         )
     })
 
-const validateBLobName = blobName => {
+const validateBLobName = async blobName => {
     if (!blobName) {
         return Promise.reject(DeleteBlobError('no image informed'))
     }
-    Promise.resolve()
+    return Promise.resolve()
 }
 
 module.exports = async ({ blobService }) => ({ blobName }) => {
